@@ -150,7 +150,8 @@ Current `analysis/*.md` artifacts do not contain a qualifying comeback swing wit
   - `26...Rb8 (me)`: expected score `1.00 -> 0.00`.
 - `analysis/2026-02-27-fast-checkmate.md` listed swings are also negative for POV expected score:
   - `15. Qxe7# (me)`: expected score `1.00 -> 0.50`.
-- `analysis/2026-03-03-comeback-vs-gaju33333.md` currently contains headers only and no swing metric block.
+- `analysis/2026-03-03-comeback-vs-gaju33333.md` now contains six forensic swings, all negative for POV expected score:
+  - `29...Qb8 (me)`: expected score `0.87 -> 0.00`.
 
 ### Why This Matters
 - This README stays evidence-backed to current repository artifacts instead of preserving stale metrics.
