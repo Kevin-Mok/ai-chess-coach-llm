@@ -1,220 +1,183 @@
 # Chess Highlights
 
 ## Overview
-This repo tracks my best rapid games and an automated local analysis pipeline that turns PGNs into evidence-backed coaching and swing reports.
+This repository tracks rapid-game highlights and a local-first analysis pipeline that turns PGNs into reproducible markdown reports.
 
 ### Why I Built This
-I built this to replace a proprietary Chess.com learning workflow with something I fully control and can extend.
+I built this to replace closed, subscription-heavy review workflows with a local stack I can inspect, tune, and extend.
 
 - Platform shift:
-  - I moved active study and game review toward Lichess because it aligns better with FOSS values and transparent tooling.
+  - I moved most analysis toward Lichess studies and local PGN tooling.
 - Tooling ownership:
-  - Instead of relying on closed premium features, I built a local pipeline around engines + scripts + markdown artifacts so I can inspect every step.
+  - Every analysis artifact is generated from scripts and engines in this repo.
 - Cost model:
-  - I use local LLMs and local engine analysis to avoid recurring premium subscription costs while still getting high-quality feedback.
-- Engineering upside:
-  - The same setup doubles as a practical software project: reproducible CLI workflows, configurable analysis depth, and evidence-backed output.
+  - Baseline and advanced analysis run locally, so core workflows do not require paid API calls.
+- Engineering value:
+  - The project demonstrates reproducible CLI automation, multi-engine orchestration, and deterministic fallback behavior.
 
 ## SWE Recruiter View
-AI-first engineering focus: this project is a local multi-engine + LLM analysis system, not just a PGN notes repo.
+This is an engineering project, not only a game archive: it automates chess forensics from PGN input to evidence-backed outputs.
 
-- Designed and integrated a local AI tooling chain (`stockfish` + `lc0` + `llama-cli`) to produce explainable chess analysis artifacts.
-- Built a reproducible CLI workflow that parses PGNs and outputs POV-oriented move tables (`Win%`, `Loss%`, `Draw%`, eval) via `analyze_pgn.py`.
-- Added significant swing detection based on expected-score deltas, with configurable threshold (`--swing-threshold-score`), scope (`--swing-scope`), and cap (`--swing-max-events`).
-- Implemented forensic mode that cross-checks swing causes with Stockfish + Lc0 and prints PV evidence plus opportunity-cost estimates.
-- Added optional `forensic-llm` layer that rewrites forensic findings with local `llama-cli` while preserving deterministic fallback if LLM tooling is unavailable.
-- Current analysis artifacts:
-  - [2026-03-03-comeback-vs-gaju33333 analysis](analysis/2026-03-03-comeback-vs-gaju33333.md)
-  - [2026-02-27-fast-checkmate analysis](analysis/2026-02-27-fast-checkmate.md)
-  - [3.4-play-well analysis](analysis/3.4-play-well.md)
+- PGN parsing + POV-oriented move-by-move engine table (`Win%`, `Loss%`, `Draw%`, eval) via `analyze_pgn.py`.
+- Expected-score swing detection with configurable threshold, scope, and max events.
+- Forensic mode behavior: Stockfish + Lc0 best-move comparison, PV evidence, and opportunity-cost estimates.
+- Optional local `forensic-llm` rewrite path (`ollama` or `llama-cli`) for human-coaching style explanations.
+- Deterministic fallback behavior when optional AI components are unavailable or fail.
 
 ### Engineering Signals
-- End-to-end automation:
-  - PGN input -> engine passes -> markdown report with consistent schema.
-- Deterministic baseline plus optional AI augmentation:
-  - `heuristic` and `forensic` modes are deterministic.
-  - `forensic-llm` is additive and optional, not a hard dependency.
-- Tooling depth:
-  - Integrates multiple local binaries (Stockfish, Lc0, llama-cli) with path auto-detection and explicit override flags.
+- End-to-end pipeline:
+  - `games/*.pgn` input to `analysis/*.md` output with a stable report structure.
+- Multi-runtime orchestration:
+  - Integrates local binaries (`stockfish`, `lc0`, `ollama`, `llama-cli`) with explicit flags and auto-detection.
 - Failure handling:
-  - Forensic mode now uses Lc0-ready retries and MultiPV-aware timeout budgeting to reduce transient engine timeouts.
-  - If forensic still fails, errors are surfaced in output and the report falls back to heuristic cause text.
+  - Forensic failures are surfaced clearly and degrade to deterministic causes instead of aborting reports.
+- Reproducibility:
+  - Local execution avoids external API coupling for core analysis paths.
 
 ### What The Main Script Produces
-- Move-by-move WDL/eval table from POV (`SoloPistol` by default, override with `--pov-player`).
-- `## Significant Swings` section with:
-  - chronological ordering (first move to last move),
-  - event severity,
-  - W/L/D before/after transition per swing,
-  - eval before/after,
+- A POV move table with W/L/D probabilities and eval deltas.
+- A `## Significant Swings` block with:
+  - severity,
   - expected-score before/after,
-  - engine disagreement/cost evidence,
-  - deep human coaching block:
-    - what you likely thought,
-    - what you missed on the board,
-    - how to decide better next time,
-    - practice habit,
-    - concise lesson.
-- Markdown output path control with `--output-md`, including stdout mode (`--output-md -`).
+  - engine comparison (Stockfish + Lc0),
+  - PV evidence,
+  - concise training lesson text.
+- Markdown output to `analysis/*.md` by default, or a custom path via `--output-md`.
 
 ## AI Tooling Stack
-This project is intentionally local-first: engine and LLM tooling run on-device without remote API dependencies.
+The stack is intentionally local-first so analysis quality and runtime behavior are measurable and reproducible.
 
 ### Tool Roles
 - `stockfish`:
-  - Primary evaluator for move-by-move WDL/eval output.
-  - Baseline engine in both standard and forensic flows.
-- `lc0` + network weights (`.pb.gz`):
-  - Secondary engine for forensic cross-checking.
-  - Used to confirm or challenge Stockfish-based swing-cause conclusions.
-- `llama-cli` + local GGUF model:
-  - Optional post-processing layer in `--cause-mode forensic-llm`.
-  - Rewrites forensic cause/lesson text while preserving factual constraints.
-- `ollama` + `qwen3:14b` (default rewrite path):
-  - Preferred local rewrite backend for `--cause-mode forensic-llm`.
-  - Produces deeper human-coaching wording while preserving deterministic guardrails.
+  - Baseline evaluator for move table and forensic comparisons.
+- `lc0` + `.pb.gz` weights:
+  - Second-opinion engine used in forensic verification.
+- `ollama` + `qwen3:14b`:
+  - Default local rewrite backend for `--cause-mode forensic-llm`.
+- `llama-cli` + GGUF model:
+  - Optional local fallback rewrite backend when Ollama is not used.
 
 ### AI/Engine Execution Modes
 - `heuristic`:
-  - Fast labels only, no forensic cross-engine validation.
-- `forensic` (default):
-  - Deterministic Stockfish + Lc0 evidence path.
-  - Produces best-move deltas, PV evidence, confidence labels, and coaching lessons.
-  - Uses Lc0-ready retries and MultiPV-aware timeout budgets for more stable `--forensic-multipv` runs.
+  - Fast deterministic cause labels.
+- `forensic`:
+  - Deterministic Stockfish + Lc0 evidence path with PV-based comparisons.
 - `forensic-llm`:
-  - Same forensic evidence plus optional local LLM rewriting.
-  - Defaults to `ollama` with model `qwen3:14b` (fallback to `llama-cli` if configured).
-  - Enforces human-only coaching language in lesson/thought/process text (no engine/PV/eval wording).
-  - Falls back to deterministic forensic text if no rewrite runtime is available.
+  - Forensic evidence plus optional local rewrite for coaching-oriented wording.
 
 ### Why This Tooling Matters
-- Reproducibility:
-  - Same local binaries + same PGN inputs produce stable markdown artifacts.
-- Cost/control:
-  - No per-call remote inference/API fees required for baseline or forensic analysis.
-- Explainability:
-  - Forensic output includes explicit PV evidence and opportunity-cost estimates, not just black-box labels.
-- Practical resilience:
-  - Missing optional AI components degrade gracefully instead of breaking the full pipeline.
+- Local control:
+  - Baseline analysis does not depend on external API availability.
+- Evidence quality:
+  - Reports include explicit before/after expected scores plus best-move deltas.
+- Degradation behavior:
+  - If forensic engine probes fail, output falls back to deterministic text instead of dropping the report.
+  - If `forensic-llm` rewrite assets are unavailable, output falls back to deterministic forensic text.
+- Current artifact evidence:
+  - `analysis/3.4-play-well.md` shows full forensic-llm swing output with Stockfish/Lc0 evidence.
+  - `analysis/2026-02-27-fast-checkmate.md` includes a documented forensic fallback case (`Timed out waiting for 'readyok' from Lc0.`).
 
 ## Local Analysis Pipeline
 ```bash
-# analyze a PGN directly (default cause mode: forensic)
+# direct analyzer usage
 python3 analyze_pgn.py games/2026-03-03-comeback-vs-gaju33333.pgn
 
-# analyze by game name/path and write analysis/<game>.md
+# helper script usage (name/path lookup -> analysis/<name>.md)
 bash scripts/analyze_game.sh 2026-03-03-comeback-vs-gaju33333
 
-# fast deterministic labels only
-python3 analyze_pgn.py games/2026-03-03-comeback-vs-gaju33333.pgn \
-  --cause-mode heuristic
+# deterministic forensic mode (default)
+python3 analyze_pgn.py games/3.4-play-well.pgn --cause-mode forensic
 
-# deterministic forensic evidence (Stockfish + Lc0)
-python3 analyze_pgn.py games/2026-03-03-comeback-vs-gaju33333.pgn \
-  --cause-mode forensic
+# forensic + local rewrite (single-line example; shell-safe)
+python3 analyze_pgn.py games/3.4-play-well.pgn --cause-mode forensic-llm --llm-backend ollama --ollama-model qwen3:14b --ollama-timeout-ms 0 --ollama-max-tokens 120
 
-# forensic + local llm rewrite (optional local model)
-python3 analyze_pgn.py games/2026-03-03-comeback-vs-gaju33333.pgn \
+# forensic + local rewrite (multiline; keep trailing \ continuations)
+python3 analyze_pgn.py games/3.4-play-well.pgn \
   --cause-mode forensic-llm \
   --llm-backend ollama \
-  --ollama-model qwen3:14b
+  --ollama-model qwen3:14b \
+  --ollama-timeout-ms 0 \
+  --ollama-max-tokens 120
 
-# live forensic-llm stream for 3.4-play-well
-# writes:
-# - analysis/live/3.4-play-well.progress.md
-# - analysis/live/3.4-play-well.lessons.md
-# - analysis/live/3.4-play-well.stockfish.md
-# - analysis/live/3.4-play-well.thinking.md
+# live split-stream run for 3.4-play-well
 bash scripts/test_play_well_live.sh
-
-# quick test pass-through args (single forensic event)
-bash scripts/test_play_well_live.sh --swing-max-events 1 --max-seconds 8
-
-# from repo root, watch all three outputs live
-tail -f /home/kevin/Documents/chess/analysis/live/3.4-play-well.progress.md
-tail -f /home/kevin/Documents/chess/analysis/live/3.4-play-well.lessons.md
-tail -f /home/kevin/Documents/chess/analysis/live/3.4-play-well.stockfish.md
-tail -f /home/kevin/Documents/chess/analysis/live/3.4-play-well.thinking.md
-
-# forensic + llama-cli fallback backend
-python3 analyze_pgn.py games/2026-03-03-comeback-vs-gaju33333.pgn \
-  --cause-mode forensic-llm \
-  --llm-backend llama-cli \
-  --llama-model ~/models/gemma-3-1b-it-Q4_K_M.gguf
 ```
 
 ### Key CLI Controls
-- Core:
+- Core runtime:
   - `--pov-player`, `--output-md`, `--max-seconds`, `--threads`, `--hash-mb`
 - Swing extraction:
-  - `--swing-threshold-score` (default `0.20`)
-  - `--swing-max-events` (default `8`)
-  - `--swing-scope both|pov|opponent` (default `pov`)
-- Forensic evidence:
-  - `--cause-mode heuristic|forensic|forensic-llm` (default `forensic`)
+  - `--swing-threshold-score`, `--swing-max-events`, `--swing-scope`
+- Forensic controls:
+  - `--cause-mode heuristic|forensic|forensic-llm`, `--forensic-time-ms`, `--forensic-multipv`, `--forensic-max-pv-plies`
   - `--lc0-path`, `--lc0-weights`
-  - `--forensic-time-ms`, `--forensic-multipv`, `--forensic-max-pv-plies`
-- Optional local LLM rewrite:
-  - `--llm-backend auto|ollama|llama-cli` (default `auto`, prefers Ollama)
-  - `--ollama-host`, `--ollama-model`, `--ollama-timeout-ms` (`0` = unlimited), `--ollama-max-tokens`, `--ollama-temperature`
-  - `--llm-log-raw`, `--llm-raw-max-chars` (`0` = unlimited) for raw rewrite/thinking logs in progress streams
-  - `--llm-request-thinking` to request a `<thinking>...</thinking>` block before JSON rewrites
-  - `--llama-cli-path`, `--llama-model`
-  - `--llama-timeout-ms`, `--llama-max-tokens`, `--llama-temperature`
+- Local rewrite controls:
+  - `--llm-backend auto|ollama|llama-cli`
+  - `--ollama-host`, `--ollama-model`, `--ollama-timeout-ms`, `--ollama-max-tokens`, `--ollama-temperature`
+  - `--llama-cli-path`, `--llama-model`, `--llama-timeout-ms`, `--llama-max-tokens`, `--llama-temperature`
 
 ### Local Setup
-- One-command local stack bootstrap:
+- Bootstrap local engine/LLM tooling:
   - `bash scripts/install_local_ai_stack.sh`
-  - Installs `lc0` + weights and `llama-cli`; does not install Ollama.
-- For default `forensic-llm` rewrite (`ollama` + `qwen3:14b`):
-  - Run elevated setup script: `bash scripts/pull_qwen3_14b.sh`
-  - Manual fallback: start Ollama (`ollama serve`) and pull model (`ollama pull qwen3:14b`).
-- Detailed setup and troubleshooting:
+- Pull/start default Ollama model path:
+  - `bash scripts/pull_qwen3_14b.sh`
+- Full setup details and troubleshooting:
   - [docs/LOCAL_AI_SETUP.md](docs/LOCAL_AI_SETUP.md)
 
 ## Chess Improvement View
-Two wins with different improvement signals: fast tactical conversion and a high-variance comeback with engine-verified turning points.
+Current artifacts show two complementary training signals:
+
+- Tactical conversion under low-rated rapid pressure (`2026-02-27-fast-checkmate`).
+- High-volatility decision-quality collapse in a sharp middlegame (`3.4-play-well`), useful for process-focused correction.
 
 ## Highlight Games
 | Date | Opponent | Platform | Result | Game Link | Why it matters |
 | --- | --- | --- | --- | --- | --- |
-| 2026-02-27 | Woaheee | Chess.com | Win (White, 1-0) | [Chess.com game](https://www.chess.com/game/live/165298129986?move=0) | Clean tactical finish with a direct king attack and forced mate. |
-| 2026-03-03 | gaju33333 | Lichess | Win (Black, 0-1) | [Lichess game](https://lichess.org/nujVa4n7) | Comeback win against 1101 after early pressure and material swings. |
+| 2026-02-27 | Woaheee | Chess.com | Win (White, 1-0) | [Chess.com game](https://www.chess.com/game/live/165298129986?move=0) | Fast tactical finish ending with `15. Qxe7#`. |
+| 2026-03-03 | gaju33333 | Lichess | Win (Black, 0-1) | [Lichess game](https://lichess.org/nujVa4n7) | Comeback-style practical win and clean queen trade conversion in move list (`34...Qxc7`). |
+| 2026-03-04 | BollaSjakk | Lichess | Loss (Black, 1-0) | [Lichess game](https://lichess.org/rke4GVsK) | Forensic-LLM sample with a critical `26...Rb8` collapse (`-99.7` expected-score points). |
 
 ## Key Moves and Turning Points
-- [**15. Qxe7#** (Chess.com analyzer)](https://www.chess.com/analysis/game/live/165298129986/analysis?move=29): immediate checkmate after queen infiltration.
-- [**18...Nxb2** (Lichess)](https://lichess.org/nujVa4n7#36): wins queenside material and flips initiative.
-- [**26...Qxe2** (Lichess)](https://lichess.org/nujVa4n7#52): tactical conversion of central pressure into a clear advantage.
-- [**34...Qxc7** (Lichess)](https://lichess.org/nujVa4n7#68): forces queen simplification and leads directly to resignation.
+- [**15. Qxe7#** (Chess.com analysis)](https://www.chess.com/analysis/game/live/165298129986/analysis?move=29): immediate checkmate conversion.
+- [**18...Nxb2** (Lichess)](https://lichess.org/nujVa4n7#36): material grab that changes the practical direction of the 2026-03-03 game.
+- [**34...Qxc7** (Lichess)](https://lichess.org/nujVa4n7#68): forced queen trade that closes the conversion path to resignation.
+- [**26...Rb8** (Lichess)](https://lichess.org/rke4GVsK#52): critical blunder in `analysis/3.4-play-well.md` with `1.00 -> 0.00` expected-score collapse.
 
 ## High Win% Comeback Evidence
-- From [analysis/2026-03-03-comeback-vs-gaju33333.md](analysis/2026-03-03-comeback-vs-gaju33333.md):
-  - `34. Qxc7 (op.)`: expected score `0.00 -> 1.00` (`+100.0` pts), eval `-5.19 -> 5.30`.
-  - This meets the high-probability comeback condition (final expected score `1.00 >= 0.80`).
-- Same game also shows volatility before conversion:
-  - `29... Qb8 (me)`: expected score `0.89 -> 0.00` (`-88.6` pts), then later recovered to a winning state.
+Current `analysis/*.md` artifacts do not contain a qualifying comeback swing with final expected score `>= 0.80`.
+
+- `analysis/3.4-play-well.md` strongest listed swing is negative for POV:
+  - `26...Rb8 (me)`: expected score `1.00 -> 0.00`.
+- `analysis/2026-02-27-fast-checkmate.md` listed swings are also negative for POV expected score:
+  - `15. Qxe7# (me)`: expected score `1.00 -> 0.50`.
+- `analysis/2026-03-03-comeback-vs-gaju33333.md` currently contains headers only and no swing metric block.
 
 ### Why This Matters
-- The comeback was not a smooth conversion; the report captures both collapse risk and recovery evidence.
-- Swing-level evidence makes this useful for both chess training and engineering storytelling:
-  - clear metric definitions,
-  - concrete turning points,
-  - reproducible artifact trail.
+- This README stays evidence-backed to current repository artifacts instead of preserving stale metrics.
+- When a full comeback artifact is regenerated with explicit swing metrics, this section can be updated with exact before/after values.
 
 ## Study/Analysis Links
-- [Chess.com game](https://www.chess.com/game/live/165298129986?move=0)
-- [Chess.com analysis](https://www.chess.com/analysis/game/live/165298129986/analysis)
-- [Lichess game](https://lichess.org/nujVa4n7)
-- [Lichess study chapter](https://lichess.org/study/9tKdUwCn/7y3AQeFe)
+- Game sources:
+  - [Chess.com game: 2026-02-27](https://www.chess.com/game/live/165298129986?move=0)
+  - [Chess.com analysis: 2026-02-27](https://www.chess.com/analysis/game/live/165298129986/analysis)
+  - [Lichess game: 2026-03-03](https://lichess.org/nujVa4n7)
+  - [Lichess study chapter: 2026-03-03](https://lichess.org/study/9tKdUwCn/7y3AQeFe)
+  - [Lichess game: 2026-03-04](https://lichess.org/rke4GVsK)
+- Local artifacts:
+  - [analysis/2026-02-27-fast-checkmate.md](analysis/2026-02-27-fast-checkmate.md)
+  - [analysis/2026-03-03-comeback-vs-gaju33333.md](analysis/2026-03-03-comeback-vs-gaju33333.md)
+  - [analysis/3.4-play-well.md](analysis/3.4-play-well.md)
 
 ## How to View the Games
-Open either PGN from `games/2026-02-27-fast-checkmate.pgn` or `games/2026-03-03-comeback-vs-gaju33333.pgn` in Chess.com or Lichess analysis boards, or import into any PGN viewer.
+- Open PGNs from `games/*.pgn` in Chess.com, Lichess, or any local PGN viewer.
+- Run `bash scripts/analyze_game.sh <game-name-or-path>` to regenerate matching markdown under `analysis/`.
+- If your shell prints `command not found` for a flag (for example `--ollama-max-tokens`), the previous line likely missed a continuation character.
 
 Visual highlight:
 
 ![Lichess comeback highlight](media/2026-03-03-lichess-comeback.gif)
 
 ## Next goals
-- Reduce early opening inaccuracies in Sicilian structures.
-- Convert winning positions with fewer time-pressure blunders.
-- Add one annotated highlight game each week.
+- Fix shell command UX around `--ollama-max-tokens` with shell-safe docs/examples (single-line first, multiline with explicit continuation).
+- Refactor `scripts/analyze_game.sh` path resolution and command assembly without changing behavior for name lookup, absolute paths, and scratch-game routing.
+- Add `gemini` as an opt-in `forensic-llm` backend while preserving deterministic fallback when credentials/runtime are unavailable.

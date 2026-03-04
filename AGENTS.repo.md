@@ -23,6 +23,7 @@ Treat these as trigger paths:
 - `analyze_pgn.py`
 - `scripts/**/*.sh`
 - `docs/LOCAL_AI_SETUP.md`
+- `docs/TODO.md`
 
 If a trigger path changes, README updates are mandatory in that same change set, except for the scratch-game exception above.
 
@@ -35,10 +36,39 @@ All README claims must come from repository artifacts only:
 - `analyze_pgn.py`
 - `scripts/analyze_game.sh`
 - `docs/LOCAL_AI_SETUP.md`
+- `docs/TODO.md`
 - `media/*`
 - Existing public game/study links already tracked in this repo
 
 Never invent games, moves, links, percentages, or outcomes.
+
+## TODO To README Sync (Required)
+
+When README regeneration is triggered, explicitly read `docs/TODO.md` and sync relevant near-term items into `README.md` section `## Next goals` (max 3 bullets).
+
+- Prefer the highest-priority actionable items from `docs/TODO.md`.
+- Keep README wording concise and recruiter-readable while preserving task intent.
+- If `docs/TODO.md` has no actionable items, keep `## Next goals` evidence-based and do not fabricate work.
+
+## Recruiter Repo-Ideas Doc Sync (Required)
+
+Maintain a recruiter-focused idea bank at `docs/RECRUITER_REPO_IDEAS.md`.
+
+Cadence ("every few updates"):
+
+1. Refresh this doc at least once every 3 README-triggered updates (see `## README Sync Trigger (Required)`).
+2. Also refresh whenever the user explicitly asks for new ideas.
+
+Doc content contract per refresh:
+
+1. Include exactly 5 GitHub repository ideas.
+2. For each idea, include:
+   - proposed repo name containing both substrings `ai` and `chess`,
+   - an `about` field intended for GitHub About text, max length `160` characters, short and catchy, and containing at least one searchable keyword phrase (for example `ai-chess-analysis-pipeline`),
+   - SWE recruiter signal (what engineering strength it demonstrates).
+3. Ideas should be realistic extensions of this repo's local AI/chess tooling direction.
+4. Do not claim an idea is already implemented unless corresponding artifacts exist in this repository.
+5. Do not use explicit "hook" labels/phrases (for example `Recruiter hook:` or `Hiring-signal hook:`) in this document.
 
 ## README Output Contract (Required)
 
@@ -63,6 +93,21 @@ README length policy:
 - Do not optimize for shortness.
 - Include enough detail to explain tooling behavior, reproducibility, and evidence-backed outcomes.
 - Prefer completeness over brevity when analysis pipeline or results are non-trivial.
+
+## README Preservation And Contract-Drift Rules (Required)
+
+Do not remove existing substantive README sections/subsections unless the user explicitly asks to remove them.
+Do not remove existing evidence-backed bullets, tables, or command examples unless they are invalid/obsolete and replaced by updated evidence-backed equivalents.
+
+When README regeneration is requested, preserve and maintain these currently-present subsections:
+
+1. Under `## Overview`: `### Why I Built This`
+2. Under `## SWE Recruiter View`: `### Engineering Signals`, `### What The Main Script Produces`
+3. Under `## AI Tooling Stack`: `### Tool Roles`, `### AI/Engine Execution Modes`, `### Why This Tooling Matters`
+4. Under `## Local Analysis Pipeline`: `### Key CLI Controls`, `### Local Setup`
+5. Under `## High Win% Comeback Evidence`: `### Why This Matters`
+
+If `README.md` contains additional substantive sections/subsections that are not yet specified in this file, add explicit rules for them in `AGENTS.repo.md` in the same change before marking the task done.
 
 ## Recruiter View Requirements
 
@@ -127,3 +172,5 @@ Before marking a task done, if trigger paths changed, verify:
 2. README command examples match current script interfaces.
 3. Numeric claims in README match current `analysis/*.md`.
 4. All required sections in the output contract are present.
+5. Existing required subsections were preserved unless user explicitly requested removal.
+6. Any new README subsection content not covered by this file has matching added rules here.
