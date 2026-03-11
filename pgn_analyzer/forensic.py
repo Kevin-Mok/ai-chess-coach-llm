@@ -16,6 +16,7 @@ from .common import (
     derive_bestmove,
     enforce_human_field,
     first_info,
+    log,
     material_delta_for_line,
     normalize_whitespace,
     orient_score_to_color,
