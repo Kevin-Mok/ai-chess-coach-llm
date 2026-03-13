@@ -3,46 +3,46 @@
 Purpose: maintain five recruiter-focused GitHub repository ideas that extend this local-first chess analysis stack.
 
 ## 1) Title
-`ai-chess-pgn-swing-forensics`
+`ai-chess-finish-pattern-library`
 
 About:
-Local-first ai-chess-analysis-pipeline for PGN swing forensics with Stockfish/Lc0 cross-checks and reproducible markdown reports.
+Local-first ai-chess-finish-dataset that tags mates, resignations, and conversion motifs from PGNs for search, review, and training.
 
 SWE recruiter signal:
-Shows strong data-pipeline design, deterministic analysis workflows, and evidence-backed reporting.
+Shows dataset design, extraction pipelines, and evidence-backed labeling discipline.
 
 ## 2) Title
-`ai-chess-engine-disagreement-tracker`
+`ai-chess-report-regression-lab`
 
 About:
-Move-level engine-disagreement-analytics that turns Stockfish-vs-Lc0 deltas into weekly decision-quality trends and review queues.
+ai-chess-analysis-pipeline regression lab that snapshots markdown reports, detects drift, and explains engine or prompt changes before release.
 
 SWE recruiter signal:
-Demonstrates metrics design, batch processing, and practical observability for model disagreement analysis.
+Demonstrates test infrastructure, reproducibility controls, and output-diff tooling.
 
 ## 3) Title
-`ai-chess-coach-llm`
+`ai-chess-local-coach-cli`
 
 About:
-Deterministic chess-forensics-core with optional local-llm-coaching rewrite, strict schema validation, and safe fallback behavior.
+Offline-friendly ai-chess-coaching-cli that turns PGNs into training notes with local models, strict schemas, and deterministic fallback text.
 
 SWE recruiter signal:
-Highlights AI integration discipline, schema enforcement, and graceful degradation under runtime failures.
+Highlights CLI product design, AI integration discipline, and graceful degradation.
 
 ## 4) Title
-`ai-chess-pgn-analysis-ci-bench`
+`ai-chess-engine-triage-board`
 
 About:
-CI-ready pgn-analysis-benchmark harness that detects output drift, enforces reproducibility gates, and tracks latency trends.
+ai-chess-engine-observability workspace for Stockfish and Lc0 disagreement triage, review queues, and decision-quality evidence bundles.
 
 SWE recruiter signal:
-Shows testing rigor, benchmark design, and release-quality thinking around regression prevention.
+Shows observability thinking, ranking workflows, and human-in-the-loop review design.
 
 ## 5) Title
-`ai-chess-rapid-comeback-dataset`
+`ai-chess-study-publisher`
 
 About:
-High-volatility chess-comeback-dataset pipeline with SAN evidence labels, clean exports, and model-eval-ready artifacts.
+ai-chess-study-automation pipeline that converts PGNs and analyzer output into study chapters, media snippets, and recruiter-friendly summaries.
 
 SWE recruiter signal:
-Demonstrates dataset engineering, labeling discipline, and reproducible export design for downstream evaluation.
+Demonstrates content-pipeline automation, transformation workflows, and polished developer UX.

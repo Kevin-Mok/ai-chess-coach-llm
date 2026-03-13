@@ -129,25 +129,32 @@ bash scripts/test_play_well_live.sh
   - [docs/LOCAL_AI_SETUP.md](docs/LOCAL_AI_SETUP.md)
 
 ## Chess Improvement View
-Current artifacts highlight tactical conversion and practical game management under rapid time controls.
+Current win artifacts are highlighted from tracked PGNs plus the `## How The Game Was Won` summaries in `analysis/*.md`.
 
-- Fast tactical finish in `2026-02-27-fast-checkmate`.
-- Conversion sequence in `2026-03-03-comeback-vs-gaju33333` ending in a decisive queen trade.
+- Fast tactical finish vs `Woaheee`, where `14...Nxf1` allowed `15. Qxe7#` immediately.
+- Conversion win vs `gaju33333`, ending with `34...Qxc7` and an immediate resignation.
+- Practical resignation win vs `AmeerIrfan`, where `40. Rc2` ended a volatile tactical race.
 - Back-rank mate win as Black vs `juliok22`, finishing a compact tactical game with `26...Re1#`.
-- Tense, drawn-out 76-move win vs `NickGen_Eral` with 88% accuracy maintained deep into the endgame.
+- Tense 76-move win vs `NickGen_Eral`, ending with `76. Qfh4#` after a long endgame grind.
+- 14-move checkmate vs `Abhijeetnegi123`, where `13...Nxc2` allowed `14. Qxf7#` immediately.
 
 ## Highlight Games
 | Date | Opponent | Platform | Result | Game Link | Why it matters |
 | --- | --- | --- | --- | --- | --- |
-| 2026-02-27 | Woaheee | Chess.com | Win (White, 1-0) | [Chess.com game](https://www.chess.com/game/live/165298129986?move=0) | Fast tactical finish ending with `15. Qxe7#`. |
-| 2026-03-03 | gaju33333 | Lichess | Win (Black, 0-1) | [Lichess game](https://lichess.org/nujVa4n7) | Clean conversion featuring `18...Nxb2` and `34...Qxc7`. |
-| 2026-03-11 | juliok22 | Chess.com | Win (Black, 0-1) | [Chess.com game](https://www.chess.com/game/live/165814123450) | Compact tactical highlight as Black, ending with a clean back-rank mate via `26...Re1#`. |
-| 2026-03-11 | NickGen_Eral | Lichess | Win (White, 1-0) | [Lichess game](https://lichess.org/lY26zNo7) | Long 76-move win with 88% accuracy, showing steady practical play deep into a drawn-out endgame. |
+| 2026-02-27 | Woaheee | Chess.com | Win (White, 1-0) | [Chess.com game](https://www.chess.com/game/live/165298129986?move=0) | Fast tactical finish where `14...Nxf1` allowed `15. Qxe7#`. |
+| 2026-03-03 | gaju33333 | Lichess | Win (Black, 0-1) | [Lichess game](https://lichess.org/nujVa4n7) | Conversion ending with `34...Qxc7`, after which White resigned. |
+| 2026-03-06 | AmeerIrfan | Lichess | Win (White, 1-0) | [Lichess game](https://lichess.org/jdooSl0M) | Practical resignation win where `40. Rc2` ended the tactical race. |
+| 2026-03-11 | juliok22 | Chess.com | Win (Black, 0-1) | [Chess.com game](https://www.chess.com/game/live/165814123450) | Compact back-rank mate highlight via `26...Re1#`. |
+| 2026-03-11 | NickGen_Eral | Lichess | Win (White, 1-0) | [Lichess game](https://lichess.org/lY26zNo7) | Long 76-move endgame win capped by `76. Qfh4#`. |
+| 2026-03-13 | Abhijeetnegi123 | Chess.com | Win (White, 1-0) | [Chess.com game](https://www.chess.com/game/live/165901228132) | Short tactical finish where `13...Nxc2` allowed `14. Qxf7#`. |
 
 ## Key Moves and Turning Points
-- [**15. Qxe7#** (Chess.com analysis)](https://www.chess.com/analysis/game/live/165298129986/analysis?move=29): immediate checkmate conversion.
-- [**18...Nxb2** (Lichess)](https://lichess.org/nujVa4n7#36): practical material gain in the conversion phase.
-- [**34...Qxc7** (Lichess)](https://lichess.org/nujVa4n7#68): decisive queen trade that closes the game.
+- [**15. Qxe7#** (Chess.com analysis)](https://www.chess.com/analysis/game/live/165298129986/analysis?move=29): immediate mate after `14...Nxf1`.
+- [**34...Qxc7** (Lichess)](https://lichess.org/nujVa4n7#68): decisive queen trade that ended the comeback win by resignation.
+- [**40. Rc2** (Lichess)](https://lichess.org/jdooSl0M): final practical move before Black resigned in the `AmeerIrfan` game.
+- [**26...Re1#** (Chess.com game)](https://www.chess.com/game/live/165814123450): clean back-rank mate to finish a compact tactical win.
+- [**76. Qfh4#** (Lichess)](https://lichess.org/lY26zNo7): mate finish at the end of a 76-move endgame grind.
+- [**14. Qxf7#** (Chess.com analysis)](https://www.chess.com/analysis/game/live/165901228132/analysis?move=23): 14-move checkmate after `13...Nxc2`.
 
 ## High Win% Comeback Evidence
 Current `analysis/*.md` artifacts include a high-confidence conversion sequence in `analysis/2026-03-03-comeback-vs-gaju33333.md` (SoloPistol POV).
@@ -167,12 +174,18 @@ Current `analysis/*.md` artifacts include a high-confidence conversion sequence 
   - [Chess.com analysis: 2026-02-27](https://www.chess.com/analysis/game/live/165298129986/analysis)
   - [Lichess game: 2026-03-03](https://lichess.org/nujVa4n7)
   - [Lichess game: 2026-03-06](https://lichess.org/jdooSl0M)
+  - [Chess.com game: 2026-03-11](https://www.chess.com/game/live/165814123450)
+  - [Lichess game: 2026-03-11](https://lichess.org/lY26zNo7)
+  - [Chess.com game: 2026-03-13](https://www.chess.com/game/live/165901228132)
+  - [Chess.com analysis: 2026-03-13](https://www.chess.com/analysis/game/live/165901228132/analysis?move=23)
   - [Lichess study chapter: 2026-03-03](https://lichess.org/study/9tKdUwCn/7y3AQeFe)
 - Local artifacts:
   - [analysis/2026-02-27-fast-checkmate.md](analysis/2026-02-27-fast-checkmate.md)
   - [analysis/2026-03-03-comeback-vs-gaju33333.md](analysis/2026-03-03-comeback-vs-gaju33333.md)
-  - [analysis/3.11-back-rank-mate.md](analysis/3.11-back-rank-mate.md)
   - [analysis/3.6-tough.md](analysis/3.6-tough.md)
+  - [analysis/3.11-back-rank-mate.md](analysis/3.11-back-rank-mate.md)
+  - [analysis/3.11-tense-endgame.md](analysis/3.11-tense-endgame.md)
+  - [analysis/14-move-checkmate-SoloPistol_vs_Abhijeetnegi123_2026.03.13.md](analysis/14-move-checkmate-SoloPistol_vs_Abhijeetnegi123_2026.03.13.md)
 
 ## How to View the Games
 - Open PGNs from `games/*.pgn` in Chess.com, Lichess, or any local PGN viewer.
