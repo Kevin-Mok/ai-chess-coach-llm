@@ -89,6 +89,9 @@ python3 analyze_pgn.py games/2026-03-03-comeback-vs-gaju33333.pgn
 # helper script usage (name/path lookup -> analysis/<name>.md)
 bash scripts/analyze_game.sh 2026-03-03-comeback-vs-gaju33333
 
+# export an OpenOffice/LibreOffice-ready rating history CSV from the combined PGN
+python3 scripts/export_elo_history_csv.py games/all/chess_com_games_2026-03-15_combined.pgn
+
 # deterministic forensic mode (default)
 python3 analyze_pgn.py games/3.4-play-well.pgn --cause-mode forensic
 
@@ -139,6 +142,7 @@ Current win artifacts are highlighted from tracked PGNs plus the `## How The Gam
 - Back-rank mate win as Black vs `juliok22`, finishing a compact tactical game with `26...Re1#`.
 - Tense 76-move win vs `NickGen_Eral`, ending with `76. Qfh4#` after a long endgame grind.
 - 14-move checkmate vs `Abhijeetnegi123`, where `13...Nxc2` allowed `14. Qxf7#` immediately.
+- 80% accuracy win vs `newbie060806` on Chess.com, a game Chess.com estimated at 1150 Elo and that finished with `45. Qbb8#`.
 
 ## Highlight Games
 | Date | Opponent | Platform | Result | Game Link | Why it matters |
@@ -151,6 +155,7 @@ Current win artifacts are highlighted from tracked PGNs plus the `## How The Gam
 | 2026-03-13 | Abhijeetnegi123 | Chess.com | Win (White, 1-0) | [Chess.com game](https://www.chess.com/game/live/165901228132) | Short tactical finish where `13...Nxc2` allowed `14. Qxf7#`. |
 | 2026-03-15 | creppyG | Chess.com | Win (Black, 0-1) | [Chess.com analysis](https://www.chess.com/analysis/game/live/165996433052/analysis) | Move-table domination reached `100.0/0.0/0.0` by move 9 and held through `56...Qa8#`. |
 | 2026-03-15 | Ironmike3982 | Chess.com | Win (White, 1-0) | [Chess.com review](https://www.chess.com/analysis/game/live/165995086288/review?move=29&move=29&tab=review&classification=greatfind&autorun=true) | Comeback mate where `15. Bf2` lost the rook but the attack still converted with `27. Qh5#`. |
+| 2026-03-17 | newbie060806 | Chess.com | Win (White, 1-0) | [Chess.com game](https://www.chess.com/game/live/166077521478) | 80% accuracy game that Chess.com estimated at 1150 Elo, finished by `45. Qbb8#`. |
 
 ## Key Moves and Turning Points
 - [**15. Qxe7#** (Chess.com analysis)](https://www.chess.com/analysis/game/live/165298129986/analysis?move=29): immediate mate after `14...Nxf1`.
@@ -161,6 +166,7 @@ Current win artifacts are highlighted from tracked PGNs plus the `## How The Gam
 - [**26...Re1#** (Chess.com game)](https://www.chess.com/game/live/165814123450): clean back-rank mate to finish a compact tactical win.
 - [**76. Qfh4#** (Lichess)](https://lichess.org/lY26zNo7): mate finish at the end of a 76-move endgame grind.
 - [**14. Qxf7#** (Chess.com analysis)](https://www.chess.com/analysis/game/live/165901228132/analysis?move=23): 14-move checkmate after `13...Nxc2`.
+- [**45. Qbb8#** (Chess.com game)](https://www.chess.com/game/live/166077521478): finished the March 17 win against `newbie060806` in the 80% accuracy game Chess.com estimated at 1150 Elo.
 
 ## High Win% Comeback Evidence
 Current `analysis/*.md` artifacts include a high-confidence conversion sequence in `analysis/2026-03-03-comeback-vs-gaju33333.md` (SoloPistol POV).
@@ -190,6 +196,7 @@ Current `analysis/*.md` artifacts include a high-confidence conversion sequence 
   - [Chess.com analysis: 2026-03-13](https://www.chess.com/analysis/game/live/165901228132/analysis?move=23)
   - [Chess.com analysis: 2026-03-15 domination](https://www.chess.com/analysis/game/live/165996433052/analysis)
   - [Chess.com review: 2026-03-15](https://www.chess.com/analysis/game/live/165995086288/review?move=29&move=29&tab=review&classification=greatfind&autorun=true)
+  - [Chess.com game: 2026-03-17](https://www.chess.com/game/live/166077521478)
   - [Lichess study chapter: 2026-03-03](https://lichess.org/study/9tKdUwCn/7y3AQeFe)
 - Local artifacts:
   - [analysis/2026-02-27-fast-checkmate.md](analysis/2026-02-27-fast-checkmate.md)
@@ -200,11 +207,14 @@ Current `analysis/*.md` artifacts include a high-confidence conversion sequence 
   - [analysis/3.11-back-rank-mate.md](analysis/3.11-back-rank-mate.md)
   - [analysis/3.11-tense-endgame.md](analysis/3.11-tense-endgame.md)
   - [analysis/14-move-checkmate-SoloPistol_vs_Abhijeetnegi123_2026.03.13.md](analysis/14-move-checkmate-SoloPistol_vs_Abhijeetnegi123_2026.03.13.md)
+  - [analysis/3.17-80-accuracy.md](analysis/3.17-80-accuracy.md)
   - [games/all/chess_com_games_2026-03-15_combined.pgn](games/all/chess_com_games_2026-03-15_combined.pgn)
+  - [games/all/chess_com_games_2026-03-15_combined_elo_history.csv](games/all/chess_com_games_2026-03-15_combined_elo_history.csv)
 
 ## How to View the Games
 - Open PGNs from `games/**/*.pgn` in Chess.com, Lichess, or any local PGN viewer.
 - The March 15 raw Chess.com export bundle is also available as one 119-game PGN at `games/all/chess_com_games_2026-03-15_combined.pgn`.
+- For spreadsheeting and ELO-over-time charts in OpenOffice Calc or LibreOffice Calc, import `games/all/chess_com_games_2026-03-15_combined_elo_history.csv` or regenerate it with `python3 scripts/export_elo_history_csv.py games/all/chess_com_games_2026-03-15_combined.pgn`.
 - Run `bash scripts/analyze_game.sh <game-name-or-path>` to regenerate matching markdown under `analysis/`.
 - Direct `python3 analyze_pgn.py games/<name>.pgn` runs also mirror the PGN stem under `analysis/` unless `--output-md` is set.
 - If your shell prints `command not found` for a flag (for example `--ollama-max-tokens`), the previous line likely missed a continuation character.
